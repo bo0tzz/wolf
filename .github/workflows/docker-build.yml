@@ -1,6 +1,7 @@
 name: Docker build
 
 on:
+  workflow-dispatch:
   push:
     paths-ignore:
       - "docs/**"
