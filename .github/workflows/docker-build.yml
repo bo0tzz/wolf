@@ -6,6 +6,9 @@ on:
     paths-ignore:
       - "docs/**"
 
+permissions:
+  packages: write
+
 jobs:
   buildx:
     runs-on: ubuntu-latest
@@ -73,21 +76,13 @@ jobs:
           version: latest
           driver-opts: image=moby/buildkit:master
 
-      - name: Login to DockerHub
-        if: steps.prep.outputs.has_docker_token != '' # secrets not available in PRs
-        uses: docker/login-action@v2
-        with:
-          username: abeltramo
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-
       - name: Login to GitHub Container Registry
-        if: steps.prep.outputs.has_github_token != '' # secrets not available in PRs
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3.3.0
+        if: ${{ !github.event.pull_request.head.repo.fork }}
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
-          password: ${{ secrets.GHCR_TOKEN }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build GPU Drivers
         uses: docker/build-push-action@v3
@@ -96,7 +91,7 @@ jobs:
           context: docker/
           file: docker/gpu-drivers.Dockerfile
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/gpu-drivers:2023.11,gameonwhales/gpu-drivers:2023.11 # TODO: set build version as param
+          tags: "ghcr.io/${{ github.repository_owner }}/gpu-drivers:2023.11"
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=registry,ref=ghcr.io/${{ github.repository_owner }}/gpu-drivers:buildcache
           cache-to: type=registry,ref=ghcr.io/${{ github.repository_owner }}/gpu-drivers:buildcache,mode=max
@@ -111,7 +106,7 @@ jobs:
           build-args: |
             GSTREAMER_VERSION=1.25.1
             BASE_IMAGE=ghcr.io/${{ github.repository_owner }}/gpu-drivers:2023.11
-          tags: ghcr.io/${{ github.repository_owner }}/gstreamer:1.25.1,gameonwhales/gstreamer:1.25.1 # TODO: set gstreamer version as param
+          tags: ghcr.io/${{ github.repository_owner }}/gstreamer:1.25.1
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=registry,ref=ghcr.io/${{ github.repository_owner }}/gstreamer:buildcache
           cache-to: type=registry,ref=ghcr.io/${{ github.repository_owner }}/gstreamer:buildcache,mode=max
