@@ -84,32 +84,32 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build GPU Drivers
-        uses: docker/build-push-action@v3
-        with:
-          builder: ${{ steps.buildx.outputs.name }}
-          context: docker/
-          file: docker/gpu-drivers.Dockerfile
-          push: true
-          tags: "ghcr.io/${{ github.repository_owner }}/gpu-drivers:2023.11"
-          labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=registry,ref=ghcr.io/${{ github.repository_owner }}/gpu-drivers:buildcache
-          cache-to: type=registry,ref=ghcr.io/${{ github.repository_owner }}/gpu-drivers:buildcache,mode=max
+      # - name: Build GPU Drivers
+      #   uses: docker/build-push-action@v3
+      #   with:
+      #     builder: ${{ steps.buildx.outputs.name }}
+      #     context: docker/
+      #     file: docker/gpu-drivers.Dockerfile
+      #     push: true
+      #     tags: "ghcr.io/${{ github.repository_owner }}/gpu-drivers:2023.11"
+      #     labels: ${{ steps.meta.outputs.labels }}
+      #     cache-from: type=registry,ref=ghcr.io/${{ github.repository_owner }}/gpu-drivers:buildcache
+      #     cache-to: type=registry,ref=ghcr.io/${{ github.repository_owner }}/gpu-drivers:buildcache,mode=max
 
-      - name: Build Gstreamer
-        uses: docker/build-push-action@v3
-        with:
-          builder: ${{ steps.buildx.outputs.name }}
-          context: docker/
-          file: docker/gstreamer.Dockerfile
-          push: true
-          build-args: |
-            GSTREAMER_VERSION=1.25.1
-            BASE_IMAGE=ghcr.io/${{ github.repository_owner }}/gpu-drivers:2023.11
-          tags: ghcr.io/${{ github.repository_owner }}/gstreamer:1.25.1
-          labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=registry,ref=ghcr.io/${{ github.repository_owner }}/gstreamer:buildcache
-          cache-to: type=registry,ref=ghcr.io/${{ github.repository_owner }}/gstreamer:buildcache,mode=max
+      # - name: Build Gstreamer
+      #   uses: docker/build-push-action@v3
+      #   with:
+      #     builder: ${{ steps.buildx.outputs.name }}
+      #     context: docker/
+      #     file: docker/gstreamer.Dockerfile
+      #     push: true
+      #     build-args: |
+      #       GSTREAMER_VERSION=1.25.1
+      #       BASE_IMAGE=ghcr.io/${{ github.repository_owner }}/gpu-drivers:2023.11
+      #     tags: ghcr.io/${{ github.repository_owner }}/gstreamer:1.25.1
+      #     labels: ${{ steps.meta.outputs.labels }}
+      #     cache-from: type=registry,ref=ghcr.io/${{ github.repository_owner }}/gstreamer:buildcache
+      #     cache-to: type=registry,ref=ghcr.io/${{ github.repository_owner }}/gstreamer:buildcache,mode=max
 
       - name: Build Wolf
         uses: docker/build-push-action@v3
@@ -117,7 +117,7 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           context: .
           file: docker/wolf.Dockerfile
-          push: ${{ steps.prep.outputs.push }}
+          push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
