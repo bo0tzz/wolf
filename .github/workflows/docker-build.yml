@@ -55,7 +55,7 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           # list of Docker images to use as base name for tags
-          images: ${{ steps.prep.outputs.images }}
+          images: ghcr.io/bo0tzz/wolf
           # generate Docker tags based on the following events/attributes
           tags: |
             type=semver,pattern={{version}}
